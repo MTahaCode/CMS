@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container mt-5" style="max-width: 2000px;" style=>
+    <h2 class="text-center mb-3 mb-md-0 me-md-auto link-body-emphasis">Teachers Attendance View</h2>
+    <button id="Adding_a_Column" style="float: right;" class='mb-3 mr-3 btn btn-primary ml-auto'>Add</button>
+    <div id = 'Save_place' ></div>
+    <table class="table table-striped mt-3 table-rounded table-bordered shadow" style="background-color: rgb(229, 229, 229);" id = 'Attendance_Sheet'>
+        <colgroup>
+            <col style="width: 100px;">
+            <col style="width: 150px;">
+            <col style="width: 200px;">
+            {% comment %} <col style="width: 77%;"> {% endcomment %}
+        </colgroup>
+        <thead>
+            <tr>
+                <th> S.No </th>
+                <th>Roll No</th>
+                <th>Name</th>
+                {% for date in dates %}
+                    <th>{{date.date}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                <td>{{row.SNo}}</td>
+                <td>{{row.rollNo}}</td>
+                <td>{{row.name}}</td>
+                {% comment %} {% for i, date in enumerate(dates) %}
+                    <td>{{ getattr(row, 'attend_' + str(i+1)) }}</td>
+                {% endfor %} {% endcomment %}
+                {% for aAttendance in row.attendanceList %}
+                    <td>
+                    <select id='drop_down_attendance'>
+                        {% if aAttendance == "None" %}
+                            <option value="--" selected>--</option>
+                            <option value="absent">A</option>
+                            <option value="present">P</option>
+                            <option value="late">L</option>
+                        {% elif aAttendance == "A" %}
+                            <option value="--">--</option>
+                            <option value="absent" selected>A</option>
+                            <option value="present">P</option>
+                            <option value="late">L</option>
+                        {% elif aAttendance == "P" %}
+                            <option value="--">--</option>
+                            <option value="absent">A</option>
+                            <option value="present" selected>P</option>
+                            <option value="late">L</option>
+                        {% else %}
+                            <option value="--">--</option>
+                            <option value="absent">A</option>
+                            <option value="present">P</option>
+                            <option value="late" selected>L</option>
+                        {% endif %}
+                    </td>
+                    </select>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock body %}
+
+{% block javastuff %} 
+    <script>
+
+    $('#Adding_a_Column').click(function(){
+
+        {% comment %} alert('button pressed'); {% endcomment %}
+        var Table = document.getElementById('Attendance_Sheet');
+        var Header = document.createElement('th');
+        Header.textContent = '{{Date}}';
+        Table.rows[0].appendChild(Header);
+        for (var i=1;i < Table.rows.length;i++)
+        {
+            var newCol = document.createElement('td');
+            newCol.textContent = 'aldsfjals';
+            Table.rows[i].appendChild(newCol);
+        }
+        var Save = document.getElementById('Save_place');
+        var Button = document.createElement('button');
+        Button.setAttribute('id', 'Save_Button');
+        Button.textContent = 'Save';
+        Button.className = 'mb-3 mr-3 btn btn-primary ml-auto ';
+        Button.style.float = 'right';
+        Save.appendChild(Button);
+    });
+
+    </script>
+{% endblock javastuff %}

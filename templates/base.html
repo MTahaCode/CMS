@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <title>Attendance Page</title>
+</head>
+
+<body>
+    <div>
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom" style="background-color: rgb(229, 229, 229);">
+            <a href="/admin" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+            <img src="{% static 'logo.png' %}" alt="Logo" style="max-width: 50px; margin-right: 20px;">
+            <span class="fs-4" style="font-family: 'Arial', sans-serif;">NUConnect</span>
+          </a>
+
+          <ul class="nav nav-pills">
+            <li class="nav-item"><a href="/attendance" class="nav-link active" aria-current="page">Attendance or Teacher</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Attendance for Students</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+          </ul>
+        </header>
+      </div>
+
+{% block body %}  {% endblock body %}
+    <!-- Include Bootstrap JavaScript file -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+
+    {% block javastuff %}  {% endblock javastuff %}
+
+</body>
+
+</html>

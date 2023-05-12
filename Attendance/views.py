@@ -1,17 +1,53 @@
 from django.shortcuts import render , HttpResponse
 from datetime import date
+import datetime
 from .models import Student, Date, Attendance
 import json
 
-def add_New_Date(request):
+def delete_attendance_of_one_date(request):
     if request.method == 'POST':
-        new_date_str = request.POST.get('date')
-        new_date = datetime.strptime(new_date_str, '%Y-%m-%d').date()
-        NewDate = Date.objects.create(date=new_date)
-        NewDate.save()
+        Date_To_Delete_str = request.POST.get('DateToBeDeleted')
+        Date_To_Delete = datetime.datetime.strptime(Date_To_Delete_str, "%B %d, %Y").date()
+        print(Date_To_Delete)
+        dateFromModel = Date.objects.filter(date=Date_To_Delete).first()
+        if dateFromModel:
+            print("date exists")
+            print(dateFromModel)
+            dateFromModel.delete()
+        else:
+            print("date does not exist")
+            
+        return HttpResponse('New Attendance data received successfully.')
+    else:
+        return HttpResponseBadRequest('Invalid request type.')
+
+def add_New_Attendance(request):
+    if request.method == 'POST':
+        new_date_str = request.POST.get('new_date')
+        new_date = datetime.datetime.strptime(new_date_str, "%B %d, %Y").date()
+        students = Student.objects.all() 
+        dates = Date.objects.all()
+        for aStudent in students:
+            for aDate in dates:
+                aAttendance = Attendance.objects.filter(student=aStudent, date=aDate).first()
+                if aAttendance is None:
+                    attendance = Attendance.objects.create(date=aDate, student=aStudent, attendance="--")
+                    attendance.save()
+        return HttpResponse('New Attendance data received successfully.')
+    else:
+        return HttpResponseBadRequest('Invalid request type.')
+
+def add_New_Date(request):
+    print("add a new date function called")
+    if request.method == 'POST':
+        new_date_str = request.POST.get('new_date')
+        new_date = datetime.datetime.strptime(new_date_str, "%B %d, %Y").date()
+        New_Date = Date.objects.create(date=new_date)
+        New_Date.save()
         return HttpResponse('Attendance data received successfully.')
     else:
         return HttpResponseBadRequest('Invalid request type.')
+
 
 def save_attendance(request):
     print("save_attendance function called!")
@@ -20,27 +56,10 @@ def save_attendance(request):
     if request.method == 'POST':
         # retrieve the attendance data
         attendance_str = request.POST.get('attendance')
-        attendance = json.loads(attendance_str)
-        #for aStudent in students:
-        #for aDate in dates:
-
-        # for row in attendance:
-        #     for cell in row:
-
-        for row,aStudent in zip(attendance,students):
-            for cell,aDate in zip(row,dates):
-                aAttendance = Attendance.objects.filter(student=aStudent, date=aDate).first()
-                if not aAttendance:
-                    aAttendance = Attendance(student=aStudent, date=aDate, attendance='')
-                if cell == "absent":
-                    aAttendance.attendance = 'A'
-                elif cell == "present":
-                    aAttendance.attendance = 'P'
-                elif cell == "late":
-                    aAttendance.attendance = 'L'
-                elif cell == "--":
-                    aAttendance.attendance = ""
-                aAttendance.save()
+        if attendance_str:
+            attendance = json.loads(attendance_str)
+        else:
+            attendance = []
 
         for row,aStudent in zip(attendance,students):
             for cell,aDate in zip(row,dates):
@@ -56,7 +75,7 @@ def save_attendance(request):
                 elif cell == "late":
                     print(cell)
                     aAttendance.attendance = 'L'
-                elif cell == "--":
+                else:
                     print(cell)
                     aAttendance.attendance = "--"
                 aAttendance.save()
@@ -92,13 +111,6 @@ def main(request):
                 'attendanceList' : AttendanceForOneStudent,
         }
         rows.append(aRow)
-    # rows = [
-    #     {'name':'Taha','rollNo':'i221547','attendance':'present'},
-    #     {'name':'Affan','rollNo':'i222603','attendance':'present'},
-    #     {'name':'Sami','rollNo':'i22717','attendance':'present'},
-    #     {'name':'Sami','rollNo':'i22717','attendance':'present'},
-    # ]
-
     context = {
         #this will take a student thing as well
         'dates' : dates,

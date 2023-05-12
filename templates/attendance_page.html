@@ -4,6 +4,7 @@
 <div class="container mt-5" style="max-width: 2000px;" style=>
     <h2 class="text-center mb-3 mb-md-0 me-md-auto link-body-emphasis">Teachers Attendance View</h2>
     <button id="Adding_a_Column" style="float: right;" class='mb-3 mr-3 btn btn-primary ml-auto'>Add</button>
+    <button id="Saving_Everything" style="float: right;" class='mb-3 mr-3 btn btn-primary ml-auto'>Save</button>
     <div id = 'Save_place' ></div>
     <table class="table table-striped mt-3 table-rounded table-bordered shadow" style="background-color: rgb(229, 229, 229);" id = 'Attendance_Sheet'>
         <colgroup>
@@ -34,7 +35,7 @@
                 {% for aAttendance in row.attendanceList %}
                     <td>
                     <select id='drop_down_attendance'>
-                        {% if aAttendance == "None" %}
+                        {% if aAttendance == "--" %}
                             <option value="--" selected>--</option>
                             <option value="absent">A</option>
                             <option value="present">P</option>
@@ -67,28 +68,111 @@
 
 {% block javastuff %} 
     <script>
+    var Table = document.getElementById('Attendance_Sheet');
+    var OriginalColumns = Table.rows[0].cells.length-3;
+    var NewColumns = Table.rows[0].cells.length-3;
 
     $('#Adding_a_Column').click(function(){
-
-        {% comment %} alert('button pressed'); {% endcomment %}
-        var Table = document.getElementById('Attendance_Sheet');
+        NewColumns++;
         var Header = document.createElement('th');
-        Header.textContent = '{{Date}}';
+        Header.textContent = '{{date}}';
         Table.rows[0].appendChild(Header);
         for (var i=1;i < Table.rows.length;i++)
         {
             var newCol = document.createElement('td');
-            newCol.textContent = 'aldsfjals';
+            var select = document.createElement('select');
+            select.name = "drop_down_attendance";
+            select.id = "drop_down_attendance" + i;
+            newCol.appendChild(select);
+
+            var option1 = document.createElement('option');
+            option1.value = "--";
+            option1.text = "--";
+            select.appendChild(option1);
+
+            var option2 = document.createElement('option');
+            option2.value = "present";
+            option2.text = "P";
+            select.appendChild(option2);
+
+            var option3 = document.createElement('option');
+            option3.value = "absent";
+            option3.text = "A";
+            select.appendChild(option3);
+
+            var option4 = document.createElement('option');
+            option4.value = "late";
+            option4.text = "L";
+            select.appendChild(option4);
+
             Table.rows[i].appendChild(newCol);
         }
-        var Save = document.getElementById('Save_place');
-        var Button = document.createElement('button');
-        Button.setAttribute('id', 'Save_Button');
-        Button.textContent = 'Save';
-        Button.className = 'mb-3 mr-3 btn btn-primary ml-auto ';
-        Button.style.float = 'right';
-        Save.appendChild(Button);
-    });
+        $(this).prop('disabled', true);
 
+    });
+    {% comment %} var Save = document.getElementById('Save_place');
+    var Button = document.createElement('button');
+    Button.setAttribute('id', 'Save_Button');
+    Button.textContent = 'Save';
+    Button.className = 'mb-3 mr-3 btn btn-primary ml-auto ';
+    Button.style.float = 'right';
+    Save.appendChild(Button); {% endcomment %}
+
+    $('#Saving_Everything').click(function(){
+
+        {% comment %} alert('before loop!'); {% endcomment %}
+        
+        if (NewColumns > OriginalColumns)
+        {
+            alert('{{date}}');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "add_New_Date" %}',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    date: '{{ date }}',
+                },
+                success: function(response) {
+                    alert('new date added');
+                },
+                error: function(response) {
+                    alert(' error adding new date');
+                }
+            });
+        }
+        var attendance = [];
+        for (var i = 1; i < Table.rows.length; i++) {
+            var OneRow = Table.rows[i];
+            var AttendanceAtOneRow = [];
+            for (var j = 3; j < OneRow.cells.length; j++)
+            {
+                var select = OneRow.cells[j].getElementsByTagName('select')[0];
+                var value = select.options[select.selectedIndex].value;
+
+                {% comment %} alert(value); {% endcomment %}
+
+                AttendanceAtOneRow.push(value);
+            }
+
+            {% comment %} alert(AttendanceAtOneRow); {% endcomment %}
+            
+            attendance.push(AttendanceAtOneRow);
+        }
+        {% comment %} alert(attendance); {% endcomment %}
+        $.ajax({
+            type: 'POST',
+            url: '{% url "save_attendance" %}',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                attendance: JSON.stringify(attendance),
+            },
+            success: function(response) {
+                alert('Attendance saved!');
+            },
+            error: function(response) {
+                alert('Error saving attendance.');
+            }
+        });
+    });
     </script>
 {% endblock javastuff %}

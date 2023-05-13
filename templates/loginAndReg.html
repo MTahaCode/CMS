@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block body %}
+
+<style>
+  #center {
+    
+    text-align: center;
+    justify-content: center;
+  }
+
+</style>
+<div id = "center" action = "/login">
+<form method ="post">
+  {% csrf_token %}
+  <span class="card text-bg-light p-2 position-absolute top-50 start-50 translate-middle " style="width: 18rem; height: 17rem;">
+  <div class="mb-3">
+    <label for="text" class="form-label">Username</label>
+    <input type="username" class="form-control" id="name" name  = "name" aria-describedby="emailHelp">
+    <div id="emailHelp" class="form-text"> Enter your username</div>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1">
+  </div>
+ 
+  <button id = 'submit_button' type="submit" class="btn btn-primary">Submit</button>
+</form>
+</span>
+<div>
+{% endblock body %}
+
+{% block javastuff %} 
+  <script>
+    $('#submit_button').click(function(event) {
+      rollno = document.querySelector('#name').value;
+      password = document.querySelector('#exampleInputPassword1').value;
+
+      $.ajax({
+        type: 'POST',
+        url: '{% url "find_UserName" %}',
+        data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            RollNo: rollno,
+            Password: password,
+        },
+        success: function(response) {
+            console.log('Found user added');
+        },
+        error: function(response) {
+            console.log('Did not find user');
+        }
+      });
+    });
+  </script>
+{% endblock javastuff %}
+

@@ -19,10 +19,7 @@
                 <th>Roll No</th>
                 <th>Name</th>
                 {% for date in dates %}
-                    <th id="Date_Heading_{{forloop.counter}}">
-                        <button id="Delete_Button_{{forloop.counter}}" style="float: left; height:25px; width:10px; display:flex; justify-content:center; align-items:center; font-size: 30px;" class='btn btn-primary ml-auto'>-</button>
-                        <div id ="TheDate">{{date.date}}</div>
-                    </th>
+                    <th>{{date.date}}</th>
                 {% endfor %}
             </tr>
         </thead>
@@ -37,7 +34,7 @@
                 {% endfor %} {% endcomment %}
                 {% for aAttendance in row.attendanceList %}
                     <td>
-                    <select id='drop_down_attendance{{forloop.counter}}'>
+                    <select id='drop_down_attendance'>
                         {% if aAttendance == "--" %}
                             <option value="--" selected>--</option>
                             <option value="absent">A</option>
@@ -59,8 +56,8 @@
                             <option value="present">P</option>
                             <option value="late" selected>L</option>
                         {% endif %}
-                    </select>
                     </td>
+                    </select>
                 {% endfor %}
             </tr>
             {% endfor %}
@@ -72,46 +69,11 @@
 {% block javastuff %} 
     <script>
     var Table = document.getElementById('Attendance_Sheet');
-    var NewColumnId = Table.rows[0].cells.length - 3;
-    // Define the event listener on the table element
-    Table.addEventListener('click', function(event) {
-        var target = event.target;
-      
-        // Check if the clicked element is a button
-        if (target.tagName === 'BUTTON') {
-            var buttonIndex = target.parentNode.cellIndex;
-            if (window.confirm("Are you sure you want to delete the attendance?"))
-            {
-                var CellHTML = Table.rows[0].cells[buttonIndex].innerHTML;
-                
-                var tempDiv = document.createElement('div');
-                tempDiv.innerHTML = CellHTML;
-
-                var DateFromCell = tempDiv.querySelector('#TheDate').innerText;
-
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "delete_attendance_of_one_date" %}',
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                        DateToBeDeleted: DateFromCell,
-                    },
-                    success: function(response) {
-                        console.log('New column added');
-                    },
-                    error: function(response) {
-                        console.log('Error adding new column');
-                    }
-                });
-                for (var i = 0; i < Table.rows.length; i++) {
-                    var row = Table.rows[i];
-                    row.deleteCell(buttonIndex);
-                }
-            }
-        }
-    });
+    var OriginalColumns = Table.rows[0].cells.length-3;
+    var NewColumns = Table.rows[0].cells.length-3;
 
     $('#Adding_a_Column').click(function(){
+        NewColumns++;
         var Header = document.createElement('th');
         Header.textContent = '{{date}}';
         Table.rows[0].appendChild(Header);
@@ -120,7 +82,7 @@
             var newCol = document.createElement('td');
             var select = document.createElement('select');
             select.name = "drop_down_attendance";
-            select.id = "drop_down_attendance" + NewColumnId;
+            select.id = "drop_down_attendance" + i;
             newCol.appendChild(select);
 
             var option1 = document.createElement('option');
@@ -147,41 +109,37 @@
         }
         $(this).prop('disabled', true);
 
-        $.ajax({
-            type: 'POST',
-            url: '{% url "add_New_Date" %}',
-            data: {
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-                new_date: '{{date}}',
-            },
-            success: function(response) {
-                console.log('New column added');
-                $.ajax({
-                    type: 'POST',
-                    url: '{% url "add_New_Attendance" %}',
-                    data: {
-                        csrfmiddlewaretoken: '{{ csrf_token }}',
-                        new_date: '{{date}}',
-                    },
-                    success: function(response) {
-                        console.log('New column added');
-                    },
-                    error: function(response) {
-                        console.log('Error adding new column');
-                    }
-                });
-            },
-            error: function(response) {
-                console.log('Error adding new column');
-            }
-        });
-
     });
+    {% comment %} var Save = document.getElementById('Save_place');
+    var Button = document.createElement('button');
+    Button.setAttribute('id', 'Save_Button');
+    Button.textContent = 'Save';
+    Button.className = 'mb-3 mr-3 btn btn-primary ml-auto ';
+    Button.style.float = 'right';
+    Save.appendChild(Button); {% endcomment %}
 
     $('#Saving_Everything').click(function(){
 
         {% comment %} alert('before loop!'); {% endcomment %}
         
+        if (NewColumns > OriginalColumns)
+        {
+            alert('{{date}}');
+            $.ajax({
+                type: 'POST',
+                url: '{% url "add_New_Date" %}',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    date: '{{ date }}',
+                },
+                success: function(response) {
+                    alert('new date added');
+                },
+                error: function(response) {
+                    alert(' error adding new date');
+                }
+            });
+        }
         var attendance = [];
         for (var i = 1; i < Table.rows.length; i++) {
             var OneRow = Table.rows[i];

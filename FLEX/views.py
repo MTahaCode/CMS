@@ -7,24 +7,32 @@ def spf(request):
 
 def find_UserName(request):
     if request.method == 'POST':
-        return redirect('Attenance:attendance')
-        # rollno = request.POST.get('RollNo')
-        # password = request.POST.get('Password')
-        # print(request.POST.get('RollNo'))
-        # print(request.POST.get('Password'))
-        # students = Student.objects.all() 
-        # print(students)
+        rollno = request.POST.get('name')
+        Password = request.POST.get('password')
+        
+        if rollno == "admin":
+             if Password == "adminadmin":
+                return redirect('/admin')
+
+        student = Student.objects.filter(RollNo=rollno, password=Password) 
+        if student.exists():
+            context = {
+                        #this will take a student thing as well
+                        'RollNo' : rollno
+                    }
+            return render(request, 'homepage.html', context)     
+        else:
+            return index(request)
+        # if rollno == "admin":
+        #     if password == "adminadmin":
+        #         return redirect('/admin')
         # for AStudent in students:
-        #     print(AStudent.RollNo)
-        #     print(AStudent.password)
         #     if AStudent.RollNo == rollno:
-        #         print('inside the single if')
         #         if AStudent.password == password:
-        #             print('inside the double if')
-        #             return render(request,'spf.html')
+        #             return render(request,'homepage.html')
         #         else:
-        #             return render(request,'loginAndReg.html')
-        # return HttpResponse('Success')
+        #             return index(request)
+        # return index(request)
     else:
         return HttpResponse('Invalid request type.')
 

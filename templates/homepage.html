@@ -1,79 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="static/style.css" />
-    <title>NuConnect | Home</title>
-    <link rel="icon" type="image/x-icon" href="/static/logo.png" />
-  </head>
-  <body>
-    <nav class="navbar navbar-custom navbar-expand-sm">
-      <a class="navbar-brand" href="/">
-        <img
-          src="/static/logo.png"
-          width="30"
-          height="30"
-          class="d-inline-block align-top"
-          alt=""
-        />
-        NuConnect
-      </a>
-      <div class="w-100 text-center">
-        <h4>{{page}}</h4>
-      </div>
-      <ul class="navbar-nav ml-auto bg-light rounded-pill">
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <img
-              src="static/profile.png"
-              alt="Profile Image"
-              width="30"
-              height="30"
-              class="rounded-circle align-middle border border-success"
-            />
-            <span class="d-none d-sm-inline text-black-50">22i-1234</span>
-          </a>
-          <div
-            class="dropdown-menu dropdown-menu-right"
-            aria-labelledby="navbarDropdown"
-          >
-            <a class="dropdown-item" href="#">Notifications</a>
-            <a class="dropdown-item" href="#">Profile</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Log Out</a>
-          </div>
-        </li>
-      </ul>
-    </nav>
+{% extends 'base.html' %}
+{% load static %}
 
-    <div class="container-fluid text-center"></div>
-    <script
-      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-      crossorigin="anonymous"
+{% block body %} 
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-sm-4">
+          <center>
+            <div class="menu-div">
+              <a href="/announcements">
+                <img src="{% static 'announcement_icon.png' %}" />
+                <h4>Announcements</h4>
+              </a>  
+            </div>
+          </center>
+        </div>
+        <div class="col-sm-4">
+          <center>
+            <div class="menu-div">
+              <a href="/resources">
+                <img src="{% static 'resources_icon.png' %}" />
+                <h4>Resources</h4>    
+              </a>  
+            </div>
+        </center>
+        </div>
+        <div class="col-sm-4">
+          <center>
+            <div class="menu-div">
+              <a href="/attendance">
+                <img src="{% static 'attendance_icon.png' %}" />
+                <h4>Attendance</h4>
+              </a>
+            </div>
+        </center>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <center>
+            <div class="menu-div">
+              <a href="/grades">
+                <img src="{% static 'grades_icon.png' %}" />
+                <h4>Grades</h4>
+              </a>
+            </div>
+        </center>
+        </div>
+        <div class="col-sm-4">
+          <center>
+            <div class="menu-div">
+              <a href="/assignments">
+                <img src="{% static 'assignments_icon.png' %}" />
+                <h4>Assignments</h4>
+              </a>
+            </div>
+        </center>
+        </div>
+        <div class="col-sm-4">
+          <center>
+            <div class="menu-div">
+              <a href="/profile">
+                <img src="{% static 'profile_icon.png' %}" />
+                <h4>Profile</h4>
+              </a>
+            </div>
+        </center>
+        </div>
+      </div>
+    </div>
+{% endblock body %}
+
+{% block javastuff %} 
+  <script
+    src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"
     ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
-      crossorigin="anonymous"
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+    crossorigin="anonymous"
     ></script>
-  </body>
-</html>
+{% endblock javastuff %}

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Attendance.apps.AttendanceConfig',
     'FLEX',
+    'announcements',
 ]
 
 MIDDLEWARE = [
